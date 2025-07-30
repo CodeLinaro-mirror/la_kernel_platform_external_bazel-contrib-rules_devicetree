@@ -1,0 +1,110 @@
+# Copyright (C) 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_devicetree//devicetree:dtb.bzl", "dtb")
+load("@rules_devicetree//devicetree:dtb_composite.bzl", "dtb_composite")
+load("@rules_devicetree//devicetree:toolchain.bzl", "devicetree_toolchain")
+load("@rules_devicetree_test_utils//:fail_analysis_test.bzl", "fail_analysis_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+devicetree_toolchain(
+    name = "custom_devicetree_toolchain",
+    default_dtcopts = [
+        "-a",
+        "1024",
+    ],
+    dtc = "@host_tools_repo//:dtc",
+    preprocess = False,
+)
+
+toolchain(
+    name = "custom_toolchain",
+    toolchain = ":custom_devicetree_toolchain",
+    toolchain_type = "@rules_devicetree//devicetree:toolchain_type",
+)
+
+# Test that $(DTC) in genrule works.
+genrule(
+    name = "dtc_version",
+    outs = ["dtc_version.txt"],
+    cmd = "$(DTC) --version >> $@",
+    # On Bazel 8.3 and above, use //devicetree:toolchain_type instead.
+    # See https://github.com/bazelbuild/bazel/issues/14009
+    toolchains = ["@rules_devicetree//devicetree:resolved_toolchain"],
+)
+
+build_test(
+    name = "build_tests",
+    targets = [
+        # keep sorted
+        ":dtc_version",
+    ],
+)
+
+# Checks that default_dtcopts is applied
+dtb(
+    name = "empty",
+    srcs = ["empty.dts"],
+)
+
+sh_test(
+    name = "empty_dtb_is_1024_bytes",
+    srcs = ["check_file_size.sh"],
+    args = [
+        "$(rootpath :empty)",
+        "1024",
+    ],
+    data = [":empty"],
+)
+
+# Checks that dtcopts is applied and overrides default_dtcopts
+dtb(
+    name = "extra_dtcopts",
+    srcs = ["empty.dts"],
+    dtcopts = [
+        "-a",
+        "2048",
+    ],
+)
+
+sh_test(
+    name = "extra_dtcopts_dtb_is_2048_bytes",
+    srcs = ["check_file_size.sh"],
+    args = [
+        "$(rootpath :extra_dtcopts)",
+        "2048",
+    ],
+    data = [":extra_dtcopts"],
+)
+
+dtb_composite(
+    name = "composite",
+    base = ":empty",
+    tags = ["manual"],
+)
+
+fail_analysis_test(
+    name = "no_fdtoverlay_should_trigger_a_failure_on_dtb_composite",
+    error_message = "The resolved toolchain, {}, does not have fdtoverlay.".format(
+        package_relative_label(":custom_devicetree_toolchain"),
+    ),
+    target_under_test = ":composite",
+)
+
+test_suite(
+    name = "tests",
+    # all tests in this package
+    tests = None,
+)

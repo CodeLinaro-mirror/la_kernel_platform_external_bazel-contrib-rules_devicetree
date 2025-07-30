@@ -1,0 +1,93 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+filegroup(
+    name = "all_bzl_files",
+    srcs = glob(["*.bzl"]),
+    visibility = ["//devicetree/tests:__subpackages__"],
+)
+
+bzl_library(
+    name = "autodetected_toolchain_repo",
+    srcs = ["autodetected_toolchain_repo.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [":constants"],
+)
+
+bzl_library(
+    name = "devicetree_library",
+    srcs = ["devicetree_library.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [":devicetree_library_info"],
+)
+
+bzl_library(
+    name = "devicetree_toolchain_info",
+    srcs = ["devicetree_toolchain_info.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [":constants"],
+)
+
+bzl_library(
+    name = "dtb",
+    srcs = ["dtb.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [
+        ":base_dtb_info",
+        ":devicetree_library_info",
+        ":utils",
+        "@bazel_skylib//lib:paths",
+        "@rules_cc//cc:action_names_bzl",
+        "@rules_cc//cc:find_cc_toolchain_bzl",
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
+    name = "dtb_composite",
+    srcs = ["dtb_composite.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [
+        ":base_dtb_info",
+        ":utils",
+    ],
+)
+
+bzl_library(
+    name = "toolchain",
+    srcs = ["toolchain.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+    deps = [
+        ":constants",
+        ":devicetree_toolchain_info",
+    ],
+)
+
+bzl_library(
+    name = "base_dtb_info",
+    srcs = ["base_dtb_info.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+)
+
+bzl_library(
+    name = "constants",
+    srcs = ["constants.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+)
+
+bzl_library(
+    name = "devicetree_library_info",
+    srcs = ["devicetree_library_info.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+)
+
+bzl_library(
+    name = "resolved_toolchain",
+    srcs = ["resolved_toolchain.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+)
+
+bzl_library(
+    name = "utils",
+    srcs = ["utils.bzl"],
+    visibility = ["//devicetree:__subpackages__"],
+)

@@ -1,0 +1,30 @@
+# This load statement must be in the docs/ package rather than anything users depend on
+# so that the dependency on stardoc doesn't leak to them.
+load("@aspect_bazel_lib//lib:docs.bzl", "stardoc_with_diff_test", "update_docs")
+
+stardoc_with_diff_test(
+    name = "api/devicetree_library",
+    bzl_library_target = "//devicetree:devicetree_library",
+)
+
+stardoc_with_diff_test(
+    name = "api/dtb",
+    bzl_library_target = "//devicetree:dtb",
+)
+
+stardoc_with_diff_test(
+    name = "api/dtb_composite",
+    bzl_library_target = "//devicetree:dtb_composite",
+)
+
+stardoc_with_diff_test(
+    name = "api/dtbo",
+    bzl_library_target = "//devicetree:dtbo",
+)
+
+stardoc_with_diff_test(
+    name = "api/toolchain",
+    bzl_library_target = "//devicetree:toolchain",
+)
+
+update_docs(name = "update")

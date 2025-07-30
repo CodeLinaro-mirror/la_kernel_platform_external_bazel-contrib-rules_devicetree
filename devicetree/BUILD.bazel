@@ -1,0 +1,76 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("//devicetree/private:resolved_toolchain.bzl", "resolved_toolchain")
+
+# For stardoc to reference the files
+exports_files(
+    [
+        # keep sorted
+        "devicetree_library.bzl",
+        "dtb.bzl",
+        "dtb_composite.bzl",
+        "dtbo.bzl",
+        "toolchain.bzl",
+    ],
+    visibility = ["//docs:__pkg__"],
+)
+
+# This is the target rule authors should put in their "toolchains"
+# attribute in order to get a runtime for the correct platform.
+# See https://docs.bazel.build/versions/main/toolchains.html#writing-rules-that-use-toolchains
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
+resolved_toolchain(
+    name = "resolved_toolchain",
+    # Marked manual so that `bazel test //...` passes
+    # even if no toolchain is registered.
+    tags = ["manual"],
+    visibility = ["//visibility:public"],
+)
+
+# If true, detect toolchain installed on host machine
+bool_flag(
+    name = "autodetect_toolchain",
+    build_setting_default = False,
+    visibility = ["//visibility:public"],
+)
+
+bzl_library(
+    name = "devicetree_library",
+    srcs = ["devicetree_library.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//devicetree/private:devicetree_library"],
+)
+
+bzl_library(
+    name = "dtb",
+    srcs = ["dtb.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//devicetree/private:dtb"],
+)
+
+bzl_library(
+    name = "dtb_composite",
+    srcs = ["dtb_composite.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//devicetree/private:dtb_composite"],
+)
+
+bzl_library(
+    name = "dtbo",
+    srcs = ["dtbo.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//devicetree/private:dtb"],
+)
+
+bzl_library(
+    name = "toolchain",
+    srcs = ["toolchain.bzl"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//devicetree/private:toolchain",
+    ],
+)
