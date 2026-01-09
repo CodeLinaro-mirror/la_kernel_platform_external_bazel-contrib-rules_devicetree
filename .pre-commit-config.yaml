@@ -14,7 +14,7 @@ repos:
       - id: check-hooks-apply
       - id: check-useless-excludes
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
@@ -30,13 +30,13 @@ repos:
       - id: trailing-whitespace
   # Check formatting and lint for starlark code
   - repo: https://github.com/keith/pre-commit-buildifier
-    rev: 8.2.0
+    rev: 8.2.1
     hooks:
       - id: buildifier
       - id: buildifier-lint
   # Enforce that commit messages allow for later changelog generation
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.8.3
+    rev: v4.11.0
     hooks:
       # Requires that commitizen is already installed
       - id: commitizen
@@ -46,7 +46,7 @@ repos:
     hooks:
       - id: prettier
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.20.0
     hooks:
       - id: yamlfmt
         exclude: |
@@ -54,6 +54,6 @@ repos:
             .bcr/config.yml
           )
   - repo: https://github.com/crate-ci/typos
-    rev: v1.34.0
+    rev: v1.41.0
     hooks:
       - id: typos
