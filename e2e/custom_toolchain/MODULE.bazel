@@ -20,11 +20,11 @@ bazel_dep(name = "rules_devicetree")
 bazel_dep(name = "rules_devicetree_test_utils")
 bazel_dep(
     name = "bazel_skylib",
-    version = "1.8.1",
+    version = "1.9.0",
 )
 bazel_dep(
     name = "rules_shell",
-    version = "0.5.0",
+    version = "0.6.1",
 )
 
 local_path_override(
