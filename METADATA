@@ -1,6 +1,5 @@
 name: "bazel-contrib-rules_devicetree"
 description: "Devicetree rules for Bazel"
-
 third_party {
   license_type: NOTICE
   last_upgrade_date {
@@ -11,6 +10,7 @@ third_party {
   identifier {
     type: "Git"
     value: "https://github.com/bazel-contrib/rules_devicetree"
-    version: "v0.1.4"
+    version: "daa352ef872e732f13ec8bd509684d9327c92a0a"
+    closest_version: "v0.1.4"
   }
 }
